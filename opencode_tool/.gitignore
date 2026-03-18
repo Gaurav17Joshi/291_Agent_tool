@@ -1,0 +1,8 @@
+.venv/
+.runtime/
+__pycache__/
+*.pyc
+runs/
+reports/
+tasks/task6/
+tasks/task7/

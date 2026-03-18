@@ -1,0 +1,8 @@
+#!/bin/sh
+'''exec' "/Users/davitabrahamyan/Documents/UCSD/Year 2/Quarter 2/CSE291P/SWE-agent/swe_env/bin/python" "$0" "$@"
+' '''
+import sys
+from ghapi.cli import ghapi
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(ghapi())

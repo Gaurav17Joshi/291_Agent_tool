@@ -148,12 +148,6 @@ Used by `run.py`:
 - `CONTINUE_OPENAI_API_BASE` (optional endpoint override)
 - `CONTINUE_OPENAI_API_KEY` (optional API key override)
 
-## Notes On Metrics
-
-- CPU/RSS are sampled from the local Continue CLI process (`psutil`), then max values are reported.
-- Timeline parsing reads `continue/.continue/logs/cn.log`.
-- Token/cost accounting prefers `Stream complete` records, with a fallback parser for usage chunks.
-- Patch stats parser supports both `git diff` format and `*** Update/Add/Delete File:` style patches.
 
 ## Known Behavior
 

@@ -1,28 +1,41 @@
-# 291_Agent_tool
+# Continue 
 
-Repository for Team 17's project: **Tool for Analysing Open Source Coding Agents**.
+This repo runs Continue CLI on SWE-bench Lite tasks and captures runtime, CPU / RSS peaks, LLM wait + generation timeline from `cn.log`, patch/file edit summary, method comparison table (baseline, alternating, router, confidence, phase, tool_complexity)
 
-This repository contains separate evaluation setups for multiple coding agents. Each agent has its own folder with its own README, setup steps, and run instructions.
+---
 
-## Agents included
+## What this repo runs
 
-- `opencode_tool`
-- `continue`
-- `SWE-agent`
-- `openhands`
+Main runners:
 
-## How to use this repository
+- `orchestrator.py`
+  - `alternating`
+  - `complexity`
+  - `normal` (single model, `gpt-5.2`)
+- `run_reference_table_test.py`
+  - picks a random SWE-bench Lite task (or fixed index)
+  - runs all 6 methods
+  - prints a table with time / tokens / cost / total calls
 
-1. Open the folder for the agent you want to evaluate.
-2. Read the `README.md` inside that folder.
-3. Follow that folder's setup and run instructions.
+Relavent files:
 
-Each folder is self-contained and may have different requirements, commands, or environment setup steps.
+- `run.py` — launches Continue CLI (`continue/extensions/cli/dist/cn.js`)
+- `timeline_processor.py` — timeline + CPU/RSS + patch stats
+- `model_alteration_experiments.py` — method logic + table metrics parsing
 
-## Purpose
+---
 
-The goal of this project is to analyse open source coding agents using task-based evaluation workflows.
+## Requirements
 
-## Team
+- Python 3.10+
+- Node.js 18+
+- Continue CLI build present at:
+  - `continue/extensions/cli/dist/cn.js`
+- OpenAI key configured either:
+  - in `continue/.continue-debug/config.yaml` (`apiKey`)
+  - or via env override (`CONTINUE_OPENAI_API_KEY`)
 
-Team 17
+Python deps:
+
+```bash
+pip install datasets psutil

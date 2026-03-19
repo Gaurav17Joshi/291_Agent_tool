@@ -8,6 +8,11 @@ Run Continue on SWE-bench Lite tasks with:
 - Patch/file edit summary from model output
 - Method comparison table across 6 model-routing strategies
 
+## External Dependency
+
+This repository does **not** include the Continue source tree.  
+Before running anything here, you must create a local `continue/` directory by cloning and building Continue.
+
 ## Important Warnings
 
 - `timeline_processor.py` is currently unstable for some multi-step strategies and can fail intermittently across runs.
@@ -37,6 +42,7 @@ Helpers Files:
 
 - Python 3.10+
 - Node.js 18+
+- Local Continue checkout under `continue/`
 - Continue CLI build at `continue/extensions/cli/dist/cn.js`
 - Continue config at `continue/.continue-debug/config.yaml`
 
@@ -44,6 +50,44 @@ Python packages:
 
 ```bash
 pip install datasets psutil
+```
+
+## Setup Continue (Required)
+
+From this repo root:
+
+```bash
+git clone https://github.com/continuedev/continue.git continue
+cd continue
+node ./scripts/build-packages.js
+cd extensions/cli
+npm install
+npm run build
+cd ../../
+```
+
+Create config file:
+
+```bash
+mkdir -p continue/.continue-debug
+cat > continue/.continue-debug/config.yaml <<'EOF'
+name: Continue Local
+version: 1.0.0
+schema: v1
+models:
+  - name: OpenAI Default
+    provider: openai
+    model: gpt-5
+    apiKey: YOUR_OPENAI_API_KEY
+    roles:
+      - chat
+EOF
+```
+
+You can also override the key via environment variable:
+
+```bash
+export CONTINUE_OPENAI_API_KEY="sk-...your-key..."
 ```
 
 ## Continue Directory Expectations
@@ -72,13 +116,15 @@ If env vars are set, `run.py` rewrites generated runtime config to use those val
 python install_dataset.py
 ```
 
-2. Run one orchestrator strategy:
+2. After `install_dataset.py`, do either one of the following:
+
+Run one orchestrator strategy (individual method path):
 
 ```bash
 python orchestrator.py alternating 0
 ```
 
-3. Run all 6 reference-table methods on one task:
+Or run all 6 reference-table methods on one task:
 
 ```bash
 python run_reference_table_test.py 0

@@ -46,6 +46,45 @@ Python packages:
 pip install datasets psutil
 ```
 
+## Run Bootstrap (Copy/Paste)
+
+```bash
+cd /Users/sukruthrao/291_Agent_tool/continue-tool
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install datasets psutil
+export CONTINUE_OPENAI_API_KEY="sk-...your-key..."
+python install_dataset.py
+python run_reference_table_test.py 0
+```
+
+If `python3.12` is not available, use your installed Python 3.10+ binary instead.
+
+## Preflight Checks
+
+Run this before a benchmark to catch setup issues quickly:
+
+```bash
+test -f continue/extensions/cli/dist/cn.js && echo "cn.js ok" || echo "missing cn.js"
+test -f continue/.continue-debug/config.yaml && echo "config ok" || echo "missing config"
+python -c "import datasets, psutil; print('python deps ok')"
+```
+
+## Fast Sanity Run
+
+Use this to verify your setup before long multi-method runs:
+
+```bash
+python orchestrator.py normal 0
+```
+
+## Runtime Expectations
+
+- `normal` is the fastest run mode.
+- `alternating` and `complexity` are slower than `normal`.
+- `run_reference_table_test.py` is usually the longest run because it executes all 6 methods.
+
 ## Continue Directory Expectations
 
 The code assumes this structure exists:
@@ -72,7 +111,9 @@ If env vars are set, `run.py` rewrites generated runtime config to use those val
 python install_dataset.py
 ```
 
-2. Run one orchestrator strategy:
+After `install_dataset.py`, do either:
+
+2. Run one orchestrator strategy (individual method path):
 
 ```bash
 python orchestrator.py alternating 0
@@ -148,6 +189,12 @@ Used by `run.py`:
 - `CONTINUE_OPENAI_API_BASE` (optional endpoint override)
 - `CONTINUE_OPENAI_API_KEY` (optional API key override)
 
+## Notes On Metrics
+
+- CPU/RSS are sampled from the local Continue CLI process (`psutil`), then max values are reported.
+- Timeline parsing reads `continue/.continue/logs/cn.log`.
+- Token/cost accounting prefers `Stream complete` records, with a fallback parser for usage chunks.
+- Patch stats parser supports both `git diff` format and `*** Update/Add/Delete File:` style patches.
 
 ## Known Behavior
 
@@ -156,4 +203,5 @@ Used by `run.py`:
 - Reference-table methods use `gpt-5` and `gpt-5-mini`.
 - Ensure your Continue config supports all model names you plan to run.
 
-LLM Usage: LLM was used only to format and style the README. The implementation and design are mine.
+LLM Usage: LLM was used only to format and style the README.
+

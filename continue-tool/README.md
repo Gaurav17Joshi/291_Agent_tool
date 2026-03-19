@@ -32,7 +32,6 @@ Helpers Files:
 
 - `install_dataset.py` - downloads/validates SWE-bench Lite via Hugging Face
 - `download.py` - saves SWE-bench Lite locally to `./swe-bench-lite`
-- `proxy_interceptor/` - optional LiteLLM proxy wrapper scripts
 
 ## Requirements
 
@@ -58,7 +57,7 @@ The code assumes this structure exists:
 If `continue/.continue-debug/config.yaml` is missing, runs will fail before invoking the model.
 
 
-Auth/endpoint sources:
+Auth sources:
 
 - Primary: values in `continue/.continue-debug/config.yaml`
 - Overrides via env vars: `CONTINUE_OPENAI_API_BASE`, `CONTINUE_OPENAI_API_KEY`
@@ -146,7 +145,7 @@ Used by `run.py`:
 - `CONTINUE_TIMEOUT_SEC` (default `900`)
 - `CONTINUE_MAX_RETRIES` (default `2`)
 - `CONTINUE_RETRY_BACKOFF_SEC` (default `2`)
-- `CONTINUE_OPENAI_API_BASE` (optional endpoint override, useful for proxy)
+- `CONTINUE_OPENAI_API_BASE` (optional endpoint override)
 - `CONTINUE_OPENAI_API_KEY` (optional API key override)
 
 ## Notes On Metrics
@@ -156,32 +155,11 @@ Used by `run.py`:
 - Token/cost accounting prefers `Stream complete` records, with a fallback parser for usage chunks.
 - Patch stats parser supports both `git diff` format and `*** Update/Add/Delete File:` style patches.
 
-## Optional Proxy Mode (LiteLLM)
-
-Use scripts under `proxy_interceptor/`.
-
-Terminal 1:
-
-```bash
-export OPENAI_API_KEY="sk-..."
-export CONTINUE_OPENAI_API_KEY="my-proxy-key"
-bash proxy_interceptor/start_proxy.sh
-```
-
-Terminal 2:
-
-```bash
-export CONTINUE_OPENAI_API_KEY="my-proxy-key"
-bash proxy_interceptor/run_proxy.sh alternating 0
-```
-
-`run_proxy.sh` forwards arguments directly to `orchestrator.py`.
-
 ## Known Behavior
 
 - Model names differ across scripts.
 - `orchestrator.py` strategies use `gpt-5.2`, `gpt-4o`, `gpt-4o-mini`.
 - Reference-table methods use `gpt-5` and `gpt-5-mini`.
-- Ensure your Continue config (or proxy mapping) supports all model names you plan to run.
+- Ensure your Continue config supports all model names you plan to run.
 
-LLM Usage: LLM was used to format and style the README.
+LLM Usage: LLM was used only to format and style the README. The implementation and design are mine.
